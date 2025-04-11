@@ -1,6 +1,6 @@
 module ElevenToTwenty (
     encodeModified, decodeModified, encodeDirect, dupli,
-    repli, myDrop
+    repli, dropEvery
 ) where
 
 import OneToTen(encode, pack)
@@ -50,9 +50,12 @@ repli l n = concatMap (f n) l
         f n x = x : f (n-1) x
 
 -- Problem 16
-myDrop :: [a] -> Int -> [a]
-myDrop [] _ = []
-myDrop _ n | n < 1 = []
-myDrop [x] 1 = []
-myDrop (x:y:ys) 1 = y:ys
-myDrop (x:xs) n = x : myDrop xs (n-1)
+dropEvery :: [a] -> Int -> [a]
+dropEvery [] _ = []
+dropEvery _ n | n < 2 = []
+dropEvery l n = 
+   let filterUnit :: Int -> [Bool]
+       filterUnit i
+         | (i<2) = [False]
+         | otherwise = True : (filterUnit (i-1))
+   in map (\(a,_) -> a) (filter (\(x,b) -> b==True) (zip l (cycle $ filterUnit n)))
